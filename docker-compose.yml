@@ -1,0 +1,24 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15.3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: my_database
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  web:
+    build: ./core
+    command: "python3 app.py"
+    restart: always
+    ports:
+      - 5100:5000
+    volumes:
+      - ./core:/app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/my_database
